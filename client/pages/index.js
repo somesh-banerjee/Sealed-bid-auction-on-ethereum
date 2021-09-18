@@ -10,10 +10,10 @@ import web3 from 'web3';
 
 class Auction extends Component{
   state = {
-      amount: '',
-      company: '',
-      encrypted: '',
-      key: ''
+    amount: '',
+    company: '',
+    encrypted: '',
+    key: ''
   }
 
   onclick = async () => {

@@ -1,5 +1,18 @@
 pragma solidity ^0.8.0;
 
+contract AuctionManager{
+    address[] public auctions;
+
+    function createAuction(uint bp) public {
+        address newAuction = address(new Auction(bp,msg.sender));
+        auctions.push(newAuction);
+    }
+
+    function getAuctions() public view returns (address[] memory) {
+        return auctions;
+    }
+}
+
 contract Auction {
     struct participant{
         uint bid;
@@ -8,6 +21,7 @@ contract Auction {
         bool revealedbid;
     }
     bool auctioning;
+    bool archive;
     uint public buyers_count;
     address public topbidder;
     uint public topbid;
@@ -20,11 +34,12 @@ contract Auction {
         _;
     }
 
-    constructor(uint bp) {
-        auctioner = msg.sender;
+    constructor(uint bp, address admin) {
+        auctioner = admin;
         buyers_count = 0;
         topbid = 0;
         auctioning = true;
+        archive = false;
         baseprice = bp;
     }
 
@@ -42,6 +57,7 @@ contract Auction {
 
     function revealBids(string memory key, uint bid, string memory company) public{
         require(!auctioning);
+        require(!archive);
         require(participants[msg.sender].placedbid);
         require(!participants[msg.sender].revealedbid);
         string memory sn = uint2str(bid);
@@ -57,6 +73,10 @@ contract Auction {
                 topbidder = msg.sender;
             }
         }
+    }
+
+    function stopAll() public restricted{
+        archive = true;
     }
 
     function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
@@ -79,5 +99,5 @@ contract Auction {
             _i /= 10;
         }
         return string(bstr);
-    }    
+    }
 }
