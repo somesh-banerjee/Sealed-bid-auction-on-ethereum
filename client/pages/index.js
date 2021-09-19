@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import Layout from '../components/Layout'
 import React,{ Component } from 'react'
 import 'semantic-ui-css/semantic.min.css'
 import { Header,Input,Button } from 'semantic-ui-react'
@@ -30,6 +31,7 @@ class Auction extends Component{
 
   render(){
     return (
+      <Layout>
       <div className={styles.container}>
         <Head>
           <title>Spectrum Auction</title>
@@ -48,6 +50,7 @@ class Auction extends Component{
         <p>
         Save your Random key: {this.state.key}</p>
       </div>
+      </Layout>
     )
   }
 }
