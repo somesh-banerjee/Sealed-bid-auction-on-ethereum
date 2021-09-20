@@ -1,4 +1,4 @@
-import Layout from '../components/Layout'
+import Layout from '../../components/Layout'
 import React,{ Component } from 'react'
 import 'semantic-ui-css/semantic.min.css'
 import { Header,Input,Button } from 'semantic-ui-react'
