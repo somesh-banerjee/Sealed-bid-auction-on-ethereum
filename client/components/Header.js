@@ -1,10 +1,12 @@
 import React from 'react';
-import { Menu,Header } from 'semantic-ui-react';
 
-export default () =>{
+const Header = () =>{
 	return (
-		<Menu style={{ marginTop:'10px'}}>
-      <Header as='h1' style={{ align:'center'}}>Spectrum Auction</Header>
-		</Menu>
+		<div style={{font:'small-caps bold 48px Georgia, serif'}}>
+			<p style={{marginTop:'20px',marginBottom:'1px'}}>Spectrum Auction</p>
+			<hr style={{marginTop:'1px',marginLeft:'1px',height:'5px',backgroundColor:'black', margin:'50px'}}/>
+		</div>
 	);
 };
+
+export default Header
