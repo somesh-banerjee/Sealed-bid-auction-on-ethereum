@@ -1,14 +1,13 @@
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
 import Layout from '../components/Layout'
 import React,{ Component } from 'react'
 import 'semantic-ui-css/semantic.min.css'
 import { Header,Input,Button } from 'semantic-ui-react'
+import { useRouter } from 'next/router'
 import Crypto from 'crypto';
 import web3 from 'web3';
 
 
-class Home extends Component{
+class Auction extends Component{
   state = {
     amount: '',
     company: '',
@@ -46,4 +45,4 @@ class Home extends Component{
   }
 }
 
-export default Home;
+export default Auction;
