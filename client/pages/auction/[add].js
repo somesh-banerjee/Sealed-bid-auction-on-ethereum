@@ -1,48 +1,84 @@
 import Layout from '../../components/Layout'
 import React,{ Component } from 'react'
 import 'semantic-ui-css/semantic.min.css'
-import { Header,Input,Button } from 'semantic-ui-react'
-import { useRouter } from 'next/router'
+import { Form,Input,Button,Message } from 'semantic-ui-react'
 import Crypto from 'crypto';
-import web3 from 'web3';
+import Auction from '../../ethereum/auction';
+import web3 from '../../ethereum/web3';
 
 
-class Auction extends Component{
+class AuctionPage extends Component{
   state = {
     amount: '',
     company: '',
     encrypted: '',
-    key: ''
+    key: '',
+    loading: false,
+    errorMessage: ''
   }
 
-  onclick = async () => {
+  static async getInitialProps(props) {
+
+    return {
+      address: props.query.address
+    };
+  }
+
+  onSubmit = async () => {
+    event.preventDefault();
     var Key = Crypto.randomBytes(16).toString('hex')
+    this.setState({ loading: true })
     this.setState({ key: Key })
     var str = Key + this.state.amount + this.state.company
-    console.log(this.state.key);
-    console.log(this.state.amount.toString());
-    console.log(this.state.company.toString());
-    console.log(str);
     var message = web3.utils.soliditySha3(str).toString();
     this.setState({ encrypted: message })
+
+    const pthnm = window.location.pathname
+    const address = pthnm.substring('/auction/'.length)
+    console.log(address);
+    const auction = Auction(address)
+
+    try {
+      const accounts = await web3.eth.requestAccounts();
+      await auction.methods.placeBid(this.state.encrypted).send({
+        from: accounts[0]
+      });
+    } catch (e) {
+      this.setState({ errorMessage: e.message});
+    }
+
+    this.setState({ loading: false })
   }
 
   render(){
     return (
       <Layout>
-      <div>
-        <div className="ui focus input"><input type="text" placeholder="Amount" onChange={event => this.setState({ amount: event.target.value })}/></div>
-        <div className="ui focus input"><input type="text" placeholder="Company" onChange={event => this.setState({ company: event.target.value })}/></div>
-        <div>
-          <Button primary onClick={this.onclick}>Encrypt</Button>
+        <div style={{width:'30%'}}>
+        <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
+          <Form.Field>
+          <label>Bid details</label>
+          <Input
+            placeholder='Bid amount'
+            value={this.state.amount}
+            onChange={event => this.setState({ amount: event.target.value })}
+            label="ether" labelPosition="right"
+          />
+          <Input
+            placeholder='Company ID'
+            value={this.state.company}
+            onChange={event => this.setState({ company: event.target.value })}
+          />
+        </Form.Field>
+        <Message error header="Oops!" content={this.state.errorMessage} />
+        <Message info hidden={!this.state.key} header="Please Save the key for future reference" content={this.state.key} />
+        <Button primary loading={this.state.loading}>
+          Place Bid
+        </Button>
+        </Form>
         </div>
-        Hash: {this.state.encrypted}
-        <p>
-        Save your Random key: {this.state.key}</p>
-      </div>
       </Layout>
     )
   }
 }
 
-export default Auction;
+export default AuctionPage;

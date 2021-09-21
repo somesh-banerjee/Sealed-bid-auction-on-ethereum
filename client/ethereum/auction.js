@@ -169,8 +169,8 @@ const abi = [
 	}
 ];
 
-const AuctionSummarry = (address) => {
+const auction = (address) => {
   return new web3.eth.Contract(abi, address);
 };
 
-export default CampaignSummary;
+export default auction;
