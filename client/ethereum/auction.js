@@ -20,12 +20,38 @@ const abi = [
 	},
 	{
 		"inputs": [],
+		"name": "archive",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "auctioner",
 		"outputs": [
 			{
 				"internalType": "address",
 				"name": "",
 				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "auctioning",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
 			}
 		],
 		"stateMutability": "view",
@@ -75,9 +101,9 @@ const abi = [
 		"name": "participants",
 		"outputs": [
 			{
-				"internalType": "uint256",
-				"name": "bid",
-				"type": "uint256"
+				"internalType": "bool",
+				"name": "revealedbid",
+				"type": "bool"
 			},
 			{
 				"internalType": "bool",
@@ -85,14 +111,19 @@ const abi = [
 				"type": "bool"
 			},
 			{
+				"internalType": "uint256",
+				"name": "bid",
+				"type": "uint256"
+			},
+			{
 				"internalType": "bytes32",
 				"name": "encryptbid",
 				"type": "bytes32"
 			},
 			{
-				"internalType": "bool",
-				"name": "revealedbid",
-				"type": "bool"
+				"internalType": "string",
+				"name": "company",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",

@@ -16,13 +16,14 @@ contract AuctionManager{
 
 contract Auction {
     struct participant{
-        uint bid;
-        bool placedbid;
-        bytes32 encryptbid;
         bool revealedbid;
+        bool placedbid;
+        uint bid;
+        bytes32 encryptbid;
+        string company;
     }
-    bool auctioning;
-    bool archive;
+    bool public auctioning;
+    bool public archive;
     uint public buyers_count;
     address public topbidder;
     uint public topbid;
@@ -66,6 +67,7 @@ contract Auction {
         bytes32 hash = keccak256(abi.encodePacked(str));
         if(hash == participants[msg.sender].encryptbid){
             participants[msg.sender].bid = bid;
+            participants[msg.sender].company = company;
             participants[msg.sender].revealedbid = true;
         }
         if(participants[msg.sender].bid >= baseprice){
