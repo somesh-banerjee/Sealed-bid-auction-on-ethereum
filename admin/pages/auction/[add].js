@@ -17,6 +17,8 @@ class AuctionPage extends Component{
     errorMessage: ''
   }
 
+  
+
   onSubmit = async () => {
     event.preventDefault();
     var Key = Crypto.randomBytes(16).toString('hex')

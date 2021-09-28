@@ -4,13 +4,20 @@ pragma solidity ^0.8.0;
 contract AuctionManager{
     address[] public auctions;
 
-    function createAuction(uint bp) public {
+    string[] public auctionsdetails;
+
+    function createAuction(uint bp, string memory detail) public {
         address newAuction = address(new Auction(bp,msg.sender));
         auctions.push(newAuction);
+        auctionsdetails.push(detail);
     }
 
     function getAuctions() public view returns (address[] memory) {
         return auctions;
+    }
+
+    function getDetails() public view returns (string[] memory) {
+        return auctionsdetails;
     }
 }
 
@@ -43,6 +50,18 @@ contract Auction {
         auctioning = true;
         archive = false;
         baseprice = bp;
+    }
+
+    function getSummary() public view returns(bool, bool, uint, address, uint, uint, address) {
+        return (
+            auctioning,
+            archive,
+            buyers_count,
+            topbidder,
+            topbid,
+            baseprice,
+            auctioner
+            );
     }
 
     function placeBid(bytes32 enc_msg) public {
