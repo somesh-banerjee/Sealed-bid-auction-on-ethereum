@@ -34,6 +34,15 @@ class Home extends Component{
     return (
       <Layout>
         <div>
+          <Link route="/auction/new">
+						<a>
+							<Button floated="right"
+								content="New Auction"
+								icon="add circle"
+								primary={true}
+							/>
+						</a>
+					</Link>
           {this.renderCards()}
         </div>
       </Layout>
