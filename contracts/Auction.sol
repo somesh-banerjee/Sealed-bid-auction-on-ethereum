@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 contract AuctionManager{
     address[] public auctions;
-
+    
     string[] public auctionsdetails;
 
     function createAuction(uint bp, string memory detail) public {
@@ -15,7 +15,7 @@ contract AuctionManager{
     function getAuctions() public view returns (address[] memory) {
         return auctions;
     }
-
+    
     function getDetails() public view returns (string[] memory) {
         return auctionsdetails;
     }
@@ -31,6 +31,7 @@ contract Auction {
     }
     bool public auctioning;
     bool public archive;
+    bool public auctionValid;
     uint public buyers_count;
     address public topbidder;
     uint public topbid;
@@ -49,9 +50,10 @@ contract Auction {
         topbid = 0;
         auctioning = true;
         archive = false;
+        auctionValid = true;
         baseprice = bp;
     }
-
+    
     function getSummary() public view returns(bool, bool, uint, address, uint, uint, address) {
         return (
             auctioning,
@@ -63,19 +65,20 @@ contract Auction {
             auctioner
             );
     }
-
-    function placeBid(bytes32 enc_msg) public {
+    
+    function placeBid(bytes32 enc_msg) public payable{
         require(auctioning);
         require(!participants[msg.sender].placedbid);
+        require(msg.value>=baseprice);
         participants[msg.sender].encryptbid = enc_msg;
         participants[msg.sender].placedbid = true;
         buyers_count++;
     }
-
+    
     function closeAuction() public restricted{
         auctioning = false;
     }
-
+    
     function revealBids(string memory key, uint bid, string memory company) public{
         require(!auctioning);
         require(!archive);
@@ -84,7 +87,7 @@ contract Auction {
         string memory sn = uint2str(bid);
         string memory str = string(abi.encodePacked(key, sn, company));
         bytes32 hash = keccak256(abi.encodePacked(str));
-        if(hash == participants[msg.sender].encryptbid){
+        if(hash == participants[msg.sender].encryptbid && bid >= topbid){
             participants[msg.sender].bid = bid;
             participants[msg.sender].company = company;
             participants[msg.sender].revealedbid = true;
@@ -93,14 +96,23 @@ contract Auction {
             if(participants[msg.sender].bid > topbid){
                 topbid = participants[msg.sender].bid;
                 topbidder = msg.sender;
+                auctionValid = true;
+            }
+            else if(participants[msg.sender].bid == topbid){
+                auctionValid = false;
             }
         }
     }
-
+    
     function stopAll() public restricted{
+        require(!auctioning);
         archive = true;
     }
 
+    function isValid() public view returns (bool){
+        return auctionValid;
+    }
+    
     function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
         if (_i == 0) {
             return "0";

@@ -89,7 +89,8 @@ const abi = [
 const instance = new web3.eth.Contract(
 	//JSON.parse(Manager.abi),
   abi,
-  '0x4AC988f87203dbe8e67BE9B4200446595040E8EC'
+  '0x73Ce52115cE91521a550c1046049089422bF04aD'
+  //'0x4AC988f87203dbe8e67BE9B4200446595040E8EC'
 );
 
 export default instance;

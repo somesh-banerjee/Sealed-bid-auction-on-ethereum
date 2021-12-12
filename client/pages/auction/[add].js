@@ -17,13 +17,16 @@ class AuctionPage extends Component{
     loading: false,
     loading2: false,
     loading3: false,
-    errorMessage: ''
+    errorMessage: '',
+    isVALID: false
   }
 
   static async getInitialProps(ctx) {
     const auction = Auction(ctx.query.add)
-
+    
     const summary = await auction.methods.getSummary().call();
+    const isvlid = await auction.methods.isValid().call();
+    //this.setState({ isVALID: isvlid });
 
     return {
       address: ctx.query.add,
@@ -33,7 +36,8 @@ class AuctionPage extends Component{
       topbidder: summary[3],
       topbid: summary[4],
       baseprice: summary[5],
-      auctioner: summary[6]
+      auctioner: summary[6],
+      isvlid: isvlid
     };
   }
 
@@ -95,7 +99,8 @@ class AuctionPage extends Component{
       try {
         const accounts = await web3.eth.requestAccounts();
         await auction.methods.placeBid(this.state.encrypted).send({
-          from: accounts[0]
+          from: accounts[0],
+          value: web3.utils.toWei(this.state.amount, 'ether')
         });
       } catch (e) {
         this.setState({ errorMessage: e.message});
@@ -154,6 +159,7 @@ class AuctionPage extends Component{
           {this.renderCards()}
         </div>
         <Message info hidden={this.props.auctioning || this.props.archive} header="The auction is not closed yet. The highest bid and highest bidder can change" />
+        <Message error hidden={this.props.isvlid} header="The auction is currently Invalid because it has two topbidders. And will be considered INVALID if top bidder is not unique by the end of the auction." />
         <Button floated="right"
           content="Close Auction"
           negative
