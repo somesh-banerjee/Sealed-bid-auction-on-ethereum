@@ -1,5 +1,4 @@
 import web3 from './web3';
-import Manager from './build/AuctionManager.json';
 
 const abi = [
 	{
