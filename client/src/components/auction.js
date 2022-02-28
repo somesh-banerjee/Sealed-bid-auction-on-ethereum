@@ -19,7 +19,7 @@ const AuctionPage = ({ match }) => {
     loading2: false,
     loading3: false,
     errorMessage: '',
-    isVALID: false,
+    isVALID: true,
     address: ''
   });
 
@@ -30,19 +30,21 @@ const AuctionPage = ({ match }) => {
       
       const summary = await auction.methods.getSummary().call();
       const isvlid = await auction.methods.isValid().call();
-      //setStts({ isVALID: isvlid });
 
-      setStts({
-        address: auction_address,
-        auctioning: summary[0],
-        archive: summary[1],
-        buyers_count: summary[2],
-        topbidder: summary[3],
-        topbid: summary[4],
-        baseprice: summary[5],
-        auctioner: summary[6],
-        isvlid: isvlid
-      });
+      setStts((prev)=>{
+        return {
+          ...prev,
+          address: auction_address,
+          auctioning: summary[0],
+          archive: summary[1],
+          buyers_count: summary[2],
+          topbidder: summary[3],
+          topbid: summary[4],
+          baseprice: summary[5],
+          auctioner: summary[6],
+          isvlid: isvlid
+        }
+      })
     };
     getAuctionDetails()
   },[match.params.id])
@@ -89,14 +91,23 @@ const AuctionPage = ({ match }) => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    setStts({ loading: true })
+    setStts((prev)=>{
+      return {
+        ...prev,
+        loading: true
+      }
+    })
     const auction = Auction(Stts.address)
     if(Stts.auctioning){
       var Key = Crypto.randomBytes(16).toString('hex')
-      setStts({ key: Key })
       var str = Key + Stts.amount + Stts.company
       var message = web3.utils.soliditySha3(str).toString();
-      setStts({ encrypted: message })
+      setStts((prev)=>{
+        return {
+          ...prev,
+          encrypted: message
+        }
+      })
 
       try {
         const accounts = await web3.eth.requestAccounts();
@@ -104,8 +115,20 @@ const AuctionPage = ({ match }) => {
           from: accounts[0],
           value: web3.utils.toWei(Stts.amount, 'ether')
         });
+        
+        setStts((prev)=>{
+          return {
+            ...prev,
+            key: Key
+          }
+        })
       } catch (e) {
-        setStts({ errorMessage: e.message});
+        setStts((prev)=>{
+          return {
+            ...prev,
+            errorMessage: e.message
+          }
+        })
       }
     }else{
       try {
@@ -114,14 +137,29 @@ const AuctionPage = ({ match }) => {
           from: accounts[0]
         });
       } catch (e) {
-        setStts({ errorMessage: e.message});
+        setStts((prev)=>{
+          return {
+            ...prev,
+            errorMessage: e.message
+          }
+        })
       }
     }
-    setStts({ loading: false })
+    setStts((prev)=>{
+      return {
+        ...prev,
+        loading: false
+      }
+    })
   }
 
   const closeBidding = async () => {
-    setStts({ loading: true })
+    setStts((prev)=>{
+      return {
+        ...prev,
+        loading3: true
+      }
+    })
     const auction = Auction(Stts.address)
 
     try {
@@ -130,14 +168,29 @@ const AuctionPage = ({ match }) => {
         from: accounts[0]
       });
     } catch (e) {
-      setStts({ errorMessage: e.message});
+      setStts((prev)=>{
+        return {
+          ...prev,
+          errorMessage: e.message
+        }
+      })
     }
 
-    setStts({ loading: false });
+    setStts((prev)=>{
+      return {
+        ...prev,
+        loading3: false
+      }
+    })
   }
 
   const closeAuction = async () => {
-    setStts({ loading2: true })
+    setStts((prev)=>{
+      return {
+        ...prev,
+        loading2: true
+      }
+    })
     const auction = Auction(Stts.address)
 
     try {
@@ -146,12 +199,22 @@ const AuctionPage = ({ match }) => {
         from: accounts[0]
       });
     } catch (e) {
-      setStts({ errorMessage: e.message});
+      setStts((prev)=>{
+        return {
+          ...prev,
+          errorMessage: e.message
+        }
+      })
       console.log(Stts.errorMessage);
       console.log(e.message);
     }
     
-    setStts({ loading2: false })
+    setStts((prev)=>{
+      return {
+        ...prev,
+        loading2: false
+      }
+    })
   }
 
   return (
@@ -170,7 +233,7 @@ const AuctionPage = ({ match }) => {
       <Button floated="right"
         content="Close Bidding"
         primary={true}
-        loading={Stts.loading}
+        loading={Stts.loading3}
         onClick={closeBidding}
       />
       <div style={{width:'30%'}}>
@@ -181,18 +244,33 @@ const AuctionPage = ({ match }) => {
         <Input
           placeholder='Bid amount'
           value={Stts.amount}
-          onChange={event => setStts({ amount: event.target.value })}
+          onChange={event => setStts((prev)=>{
+            return {
+              ...prev,
+              amount: event.target.value
+            }
+          })}
           label="ether" labelPosition="right"
         />
         <Input
           placeholder='Company ID'
           value={Stts.company}
-          onChange={event => setStts({ company: event.target.value })}
+          onChange={event => setStts((prev)=>{
+            return {
+              ...prev,
+              company: event.target.value
+            }
+          })}
         />
         <Input
           placeholder='Key'
           value={Stts.skey}
-          onChange={event => setStts({ skey: event.target.value })}
+          onChange={event => setStts((prev)=>{
+            return {
+              ...prev,
+              skey: event.target.value
+            }
+          })}
           disabled={Stts.auctioning}
         />
       </Form.Field>
