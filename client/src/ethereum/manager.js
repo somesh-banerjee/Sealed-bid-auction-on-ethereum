@@ -88,7 +88,7 @@ const abi = [
 const instance = new web3.eth.Contract(
 	//JSON.parse(Manager.abi),
   abi,
-  '0x73Ce52115cE91521a550c1046049089422bF04aD' // for Rinkeby
+  '0xf1C8CfaC53b8C3b13Bd9B7d6e96D268286D45242' // for Rinkeby
   //'0xDCE793C9dcB9b75ea54cb0Bd16E71c818B69eCc6'  // for ganache
   //'0x4AC988f87203dbe8e67BE9B4200446595040E8EC'
 );
