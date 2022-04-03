@@ -49,8 +49,12 @@ const AuctionPage = ({ match }) => {
     getAuctionDetails()
   },[match.params.id])
 
-  const renderCards = () => {
+  // useEffect(()=>{
+  //   renderCards()
+  // },[Stts])
 
+  const renderCards = () => {
+    console.log(Stts)
     const items = [
       {
         header: Stts.auctioner,
@@ -69,7 +73,7 @@ const AuctionPage = ({ match }) => {
         description: "Number of Participants"
       }
     ];
-    if(Stts.auctioning === 0){
+    if(Stts.auctioning === false){
       items.push(
         {
           header: Stts.topbid,
